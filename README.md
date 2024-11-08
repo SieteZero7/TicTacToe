@@ -78,7 +78,9 @@ El servidor emite eventos para actualizar a los clientes sobre el estado de las 
 nodemon index
 ```
 
-
+## CREDITS
+- **Laura Maturana CI 27241503**
+2024
 
 
 

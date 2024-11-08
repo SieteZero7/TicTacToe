@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TicTacToe</title>
+
+    <link rel="stylesheet" href="style.css">
+
+</head>
+
+<body>
+
+    <h1>TRES EN LINEA</h1>
+
+    <nav id="menu">
+        <h4 id="titleMenu">MENU</h4>
+        
+        <button id="startFind">Buscar Partida</button>
+        <br><button id="menuS">Salas</button>
+        <br><button id="reglasLink">Reglas del Juego</a>
+            
+    </nav>
+    
+    <div id="reglas" style="display: none;">
+        <h3>Reglas del Juego</h3>
+        <p style="font-size: 1rem;">1. El juego se juega en una cuadrícula de 3x3.</p>
+        <p style="font-size: 1rem;">2. Los jugadores alternan turnos para colocar su símbolo (X o O) en una celda vacía.</p>
+        <p style="font-size: 1rem;">3. El primer jugador en alinear tres de sus símbolos en fila, columna o diagonal gana.</p>
+        <p style="font-size: 1rem;">4. Si todas las celdas se llenan y no hay ganador, el juego termina en empate.</p>
+        <button id="closeReglas">Cerrar</button>
+    </div>
+
+    <div style="display: flex; width: 95vw; position: relative;">
+        <p id="userCont">Tú : <span id="user"></span></p>
+        <p style="position: absolute; right: 0;" id="oppNameCont">Oponente : <span id="oppName"></span></p>
+
+    </div>
+    <br>
+        <p id="valueCont">Tu eres: <span id="value"></span></p>
+    <br>
+        <p id="whosTurn">Turno de X's</p>
+    
+    <div id="InicioBusqueda">
+        <p style="font-size: 1.2rem;" id="enterName">Introduzca su nombre : </p>
+        <input type="text" placeholder="Nombre" id="name" class="espacioNombre" autocomplete="off">
+    </div>
+
+    
+    <button id="find">Buscar Oponente</button>
+    <img id="loading" src="loading-loading-forever.gif" alt="">
+    
+        
+    <div id="menuSalas">
+        <h3>Salas</h3>
+        <input id="roomName" placeholder="Nombre de la sala" />
+        <input id="playerName" placeholder="Tu nombre" />
+        <button id="createRoom">Crear Sala</button>
+        <button id="joinRoom">Unirse a Sala</button>
+        <button id="leaveRoom">Salir de Sala</button>
+        
+    </div>
+
+    <div id="roomsListContainer" style="margin-top: 20px;">
+        <h3>Salas disponibles:</h3>
+        <div id="roomsList"></div>
+        <div id="status"></div>
+        <ul id="roomsList"></ul> 
+    </div>
+
+
+    <div id="bigcont">
+        <div id="cont">
+
+            <button id="btn1" class="btn"></button>
+            <button id="btn2" class="btn"></button>
+            <button id="btn3" class="btn"></button>
+            <button id="btn4" class="btn"></button>
+            <button id="btn5" class="btn"></button>
+            <button id="btn6" class="btn"></button>
+            <button id="btn7" class="btn"></button>
+            <button id="btn8" class="btn"></button>
+            <button id="btn9" class="btn"></button>
+        </div>
+    </div>
+
+    <div id="chatContainer" style="margin-top: 20px; margin-left: 20px;">
+        <div id="messages" style="border: 1px solid #868686; height: 200px; overflow-y: scroll; padding: 10px; background-color: #e7e6e6;">
+            
+        </div>
+        <input type="text" id="chatInput" placeholder="Escriba su mensaje..." autocomplete="off" />
+        <button id="sendChat">Enviar</button>
+    </div>
+
+</body>
+<script src="/socket.io/socket.io.js"></script>
+
+
+<script>
+    document.getElementById("loading").style.display = "none"
+    document.getElementById("bigcont").style.display = "none"
+    document.getElementById("userCont").style.display = "none"
+    document.getElementById("oppNameCont").style.display = "none"
+    document.getElementById("valueCont").style.display = "none"
+    document.getElementById("whosTurn").style.display = "none"
+    document.getElementById("chatContainer").style.display = "none"
+    document.getElementById("menuSalas").style.display = "none"
+    document.getElementById("roomsListContainer").style.display = "none"
+    document.getElementById("InicioBusqueda").style.display = "none"
+    document.getElementById("find").style.display = "none"
+    document.getElementById("loading").style.display = "none"
+
+    document.getElementById("reglasLink").addEventListener("click", function() {
+            document.getElementById("reglas").style.display = "block";
+            document.getElementById("menu").style.display = "none"
+        });
+
+        document.getElementById("closeReglas").addEventListener("click", function() {
+            document.getElementById("reglas").style.display = "none";
+            document.getElementById("menu").style.display = "block"
+        });
+    
+    document.getElementById("menuS").addEventListener("click",function(){
+        document.getElementById("menuSalas").style.display = "block";
+        document.getElementById("roomsListContainer").style.display = "block"
+        document.getElementById("menu").style.display = "none"
+    })
+
+    document.getElementById("startFind").addEventListener("click", function(){
+        document.getElementById("InicioBusqueda").style.display = "block"
+        document.getElementById("find").style.display = "block"
+        document.getElementById("menu").style.display = "none"
+        //document.getElementById("loading").style.display = "block"
+    })
+
+    // Establece una conexión a un servidor WebSocket utilizando Socket.IO
+    const socket = io();
+
+    let name;
+
+    // Escucha el evento "roomsList" enviado por el servidor
+    // y ejecuta la función de callback con la lista de salas recibida
+    socket.on("roomsList", (rooms) => {
+            const roomsList = document.getElementById("roomsList");
+            roomsList.innerHTML = "";
+            rooms.forEach(room => {
+                roomsList.innerHTML += `<div>${room}</div>`;
+            });
+        });
+
+        // Escuchar la unión a la sala
+        socket.on("joinedRoom", (roomName) => {
+            alert(`Te has unido a la sala: ${roomName}`);
+        });
+
+        document.getElementById("joinRoom").addEventListener("click", () => {
+            const roomName = document.getElementById("roomName").value;
+            const playerName = document.getElementById("playerName").value;
+            if (roomName.trim() === '' || playerName.trim() === '') {
+                alert("Por favor, introduce un nombre de sala y tu nombre.");
+                return;
+            }
+            name = playerName; 
+            socket.emit("joinRoom", roomName, playerName);
+            document.getElementById("roomName").value = ""; 
+            document.getElementById("playerName").value = ""; 
+            
+            
+        
+        });
+
+        // Escuchar la notificación de espera
+        // Se activa cuando un jugador está esperando en una sala y actualiza el estado en la interfaz
+        socket.on("waiting", (roomName) => {
+            document.getElementById("status").innerText = `Esperando en la sala: ${roomName}`;
+        });
+
+        document.getElementById('sendChat').addEventListener('click', function () {
+            const message = document.getElementById('chatInput').value;
+            if (message) {
+                console.log('Mensaje enviado:', message); // Agregar log
+                socket.emit('chatMessage', { name: name, message: message });
+                document.getElementById('chatInput').value = ''; // Limpiar el input
+            }
+        });
+
+        // Escucha el mensaje de chat recibido
+        // Se activa cuando un mensaje de chat es enviado por otro jugador y lo muestra en la interfaz
+        socket.on('chatMessage', (data) => {
+            console.log('Mensaje recibido en el cliente:', data);
+            const messageElement = document.createElement('p');
+            messageElement.innerText = `${data.name}: ${data.message}`;
+            document.getElementById('messages').appendChild(messageElement);
+            document.getElementById('messages').scrollTop = document.getElementById('messages').scrollHeight; 
+        });
+        
+        // Escucha el inicio del juego
+        // Se activa cuando el juego comienza en una sala llena y muestra la interfaz de juego
+        socket.on("startGame", (roomName) => {
+            alert(`La sala ${roomName} está llena. ¡El juego comienza!`);
+
+            document.getElementById("menuSalas").style.display = "none"; 
+            document.getElementById("roomsListContainer").style.display = "none"; 
+            document.getElementById("loading").style.display = "none"; 
+            document.getElementById("name").style.display = "none"; 
+            document.getElementById("find").style.display = "none"; 
+            document.getElementById("enterName").style.display = "none";
+            document.getElementById("menu").style.display = "none";
+
+            document.getElementById("userCont").style.display = "block"; 
+            document.getElementById("oppNameCont").style.display = "block"; 
+            document.getElementById("valueCont").style.display = "block"; 
+            document.getElementById("bigcont").style.display = "block"; 
+            document.getElementById("whosTurn").style.display = "block"; 
+            document.getElementById("chatContainer").style.display = "block"; 
+
+            document.querySelectorAll(".btn").forEach(e => {
+                e.addEventListener("click", function () {
+                    if (e.innerText === '') { 
+                        let value = document.getElementById("value").innerText;
+                        e.innerText = value; 
+                        e.disabled = true; 
+
+                        socket.emit("playing", { value: value, id: e.id, name: name });
+                    }
+                });
+            });
+
+        })
+
+        // Crear sala
+        document.getElementById("createRoom").addEventListener("click", () => {
+            const roomName = document.getElementById("roomName").value;
+            const playerName = document.getElementById("playerName").value;
+            if (roomName.trim() === '' || playerName.trim() === '') {
+                alert("Por favor, introduce un nombre de sala y tu nombre.");
+                return;
+            }
+            name = playerName;
+            socket.emit("createRoom", roomName);
+            document.getElementById("roomName").value = ""; // Limpiar el campo
+            document.getElementById("playerName").value = ""; // Limpiar el campo
+        });
+
+        // Unirse a sala
+        document.getElementById("joinRoom").addEventListener("click", () => {
+            const roomName = document.getElementById("roomName").value;
+            const playerName = document.getElementById("playerName").value;
+            if (roomName.trim() === '' || playerName.trim() === '') {
+                alert("Por favor, introduce un nombre de sala y tu nombre.");
+                return;
+            }
+            name = playerName;
+            socket.emit("joinRoom", roomName, playerName);
+            document.getElementById("roomName").value = ""; // Limpiar el campo
+            document.getElementById("playerName").value = ""; // Limpiar el campo
+        });
+
+        // Salir de sala
+        document.getElementById("leaveRoom").addEventListener("click", () => {
+            const roomName = document.getElementById("roomName").value;
+            if (roomName.trim() === '') {
+                alert("Por favor, introduce un nombre de sala.");
+                return;
+            }
+            socket.emit("leaveRoom", roomName);
+            document.getElementById("status").innerText = ""; // Limpiar el estado
+        });
+    // Escuchar la lista de salas disponibles
+    socket.on("roomsList", (rooms) => {
+        const roomsList = document.getElementById("roomsList");
+        roomsList.innerHTML = ""; // Limpiar la lista antes de agregar
+        rooms.forEach(room => {
+            const li = document.createElement("li");
+            li.textContent = room;
+            roomsList.appendChild(li);
+        });
+    });
+////////////////////////////////////////////////////////////////////////////////////
+    //TODA LA PARTE DEL JUEGO QUE FUNCIONA CUANDO SE ENTRA A UNA PARTIDA POR BUSQUEDA    
+
+    
+    document.getElementById('find').addEventListener("click", function () {
+        name = document.getElementById("name").value
+        document.getElementById("user").innerText = name
+        if (name == null || name == '') {
+            alert("Please enter a name")
+        }
+        else {
+
+            socket.emit("find", { name: name })
+
+            document.getElementById("loading").style.display = "block"
+            document.getElementById("find").disabled = true;
+
+        }
+    })
+
+    // Escucha el evento "find" que se activa cuando se encuentra un oponente
+    // Actualiza la interfaz con el nombre del oponente y su símbolo (X o O)
+    socket.on("find", (e) => {
+
+
+        let allPlayersArray = e.allPlayers
+        console.log("html",allPlayersArray)
+
+        if (name != '') {
+            document.getElementById("menuSalas").style.display = "none"
+            document.getElementById("roomsListContainer").style.display = "none"
+            document.getElementById("userCont").style.display = "block"
+            document.getElementById("oppNameCont").style.display = "block"
+            document.getElementById("valueCont").style.display = "block"
+            document.getElementById("loading").style.display = "none"
+            document.getElementById("name").style.display = "none"
+            document.getElementById("find").style.display = "none"
+            document.getElementById("enterName").style.display = "none"
+            document.getElementById("bigcont").style.display = "block"
+            document.getElementById("whosTurn").style.display = "block"
+            document.getElementById("whosTurn").innerText = "Turno de X's"
+            document.getElementById("chatContainer").style.display = "block"
+            document.getElementById("menu").style.display = "none";
+        }
+
+        let oppName
+        let value
+
+        const foundObject = allPlayersArray.find(obj => obj.p1.p1name == `${name}` || obj.p2.p2name == `${name}`);
+        foundObject.p1.p1name == `${name}` ? oppName = foundObject.p2.p2name : oppName = foundObject.p1.p1name
+        foundObject.p1.p1name == `${name}` ? value = foundObject.p1.p1value : value = foundObject.p2.p2value
+
+        document.getElementById("oppName").innerText = oppName
+        document.getElementById("value").innerText = value
+
+
+});
+
+    document.querySelectorAll(".btn").forEach(e => {
+        e.addEventListener("click", function () {
+            let value = document.getElementById("value").innerText
+            e.innerText = value
+
+            socket.emit("playing", { value: value, id: e.id, name: name })
+
+        })
+    })
+
+    // Escucha el evento "playing" que se activa cuando un jugador hace un movimiento
+    // Actualiza la interfaz con el movimiento realizado y verifica si hay un ganador
+    socket.on("playing", (e) => {
+        const foundObject = (e.allPlayers).find(obj => obj.p1.p1name == `${name}` || obj.p2.p2name == `${name}`);
+
+        p1id = foundObject.p1.p1move
+        p2id = foundObject.p2.p2move
+
+        if ((foundObject.sum) % 2 == 0) {
+            document.getElementById("whosTurn").innerText = "Turno de O's"
+        }
+        else {
+            document.getElementById("whosTurn").innerText = "Turno de X's"
+        }
+
+        if (p1id != '') {
+            document.getElementById(`${p1id}`).innerText = "X"
+            document.getElementById(`${p1id}`).disabled = true
+            document.getElementById(`${p1id}`).style.color = "black"
+        }
+        if (p2id != '') {
+            document.getElementById(`${p2id}`).innerText = "O"
+            document.getElementById(`${p2id}`).disabled = true
+            document.getElementById(`${p2id}`).style.color = "black"
+        }
+
+        check(name, foundObject.sum)
+
+
+    })
+
+    function check(name, sum) {
+        // Esta función verifica si hay un ganador o si el juego ha terminado en empate.
+        // Toma como parámetros el nombre del jugador y la suma de movimientos realizados.
+
+        // Se obtienen los valores actuales de los botones del juego, 
+        // si están vacíos se asignan letras como marcadores.
+        document.getElementById("btn1").innerText == '' ? b1 = "a" : b1 = document.getElementById("btn1").innerText
+        document.getElementById("btn2").innerText == '' ? b2 = "b" : b2 = document.getElementById("btn2").innerText
+        document.getElementById("btn3").innerText == '' ? b3 = "c" : b3 = document.getElementById("btn3").innerText
+        document.getElementById("btn4").innerText == '' ? b4 = "d" : b4 = document.getElementById("btn4").innerText
+        document.getElementById("btn5").innerText == '' ? b5 = "e" : b5 = document.getElementById("btn5").innerText
+        document.getElementById("btn6").innerText == '' ? b6 = "f" : b6 = document.getElementById("btn6").innerText
+        document.getElementById("btn7").innerText == '' ? b7 = "g" : b7 = document.getElementById("btn7").innerText
+        document.getElementById("btn8").innerText == '' ? b8 = "h" : b8 = document.getElementById("btn8").innerText
+        document.getElementById("btn9").innerText == '' ? b9 = "i" : b9 = document.getElementById("btn9").innerText
+
+        // Se comprueba si hay una combinación ganadora entre los botones
+        if ((b1 == b2 && b2 == b3) || (b4 == b5 && b5 == b6) || (b7 == b8 && b8 == b9) || (b1 == b4 && b4 == b7) || (b2 == b5 && b5 == b8) || (b3 == b6 && b6 == b9) || (b1 == b5 && b5 == b9) || (b3 == b5 && b5 == b7)) {
+
+            // Si hay un ganador, se emite un evento "gameOver" al servidor
+            // y se muestra una alerta con el resultado
+            socket.emit("gameOver", { name: name })
+
+            setTimeout(() => {
+
+                sum % 2 == 0 ? alert("X GANÓ !!") : alert("O GANÓ !!")
+
+                setTimeout(() => {
+                    location.reload()
+
+                }, 2000)
+
+            }, 100)
+
+        }
+        
+        // Si se han realizado 10 movimientos y no hay ganador, se declara un empate
+        else if (sum == 10) {
+            socket.emit("gameOver", { name: name })
+
+            setTimeout(() => {
+
+                alert("EMPATE!")
+
+                setTimeout(() => {
+                    location.reload()
+
+                }, 2000)
+
+            }, 100)
+        }
+    }
+
+
+
+</script>
+
+</html>

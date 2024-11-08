@@ -1,6 +1,7 @@
 # TicTacToe
 
-##index.js
+## index.js
+
 Este código es una aplicación de servidor web construida con Node.js y Express, que utiliza Socket.IO para habilitar la comunicación en tiempo real entre los clientes y el servidor. Aquí hay un resumen de sus principales características:
 
 Configuración del Servidor: Se establece un servidor HTTP utilizando Express y se configura Socket.IO para manejar conexiones en tiempo real.

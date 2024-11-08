@@ -1,5 +1,15 @@
 # TicTacToe
 
+Tic Tac Toe, también conocido como "Tres en Línea", es un juego de mesa simple y popular que se juega entre dos jugadores. El objetivo del juego es ser el primero en alinear tres de sus símbolos en una fila, ya sea horizontal, vertical o diagonalmente. Aquí están los aspectos clave del juego:
+
+Tablero: El juego se juega en una cuadrícula de 3x3, que consta de 9 celdas.
+
+Símbolos: Un jugador utiliza el símbolo "X" y el otro utiliza "O". Los jugadores alternan turnos para colocar su símbolo en una celda vacía del tablero.
+
+Ganador: El primer jugador que logra alinear tres de sus símbolos en línea (horizontal, vertical o diagonal) gana la partida.
+
+Empate: Si todas las celdas del tablero están llenas y ningún jugador ha alineado tres símbolos, el juego termina en empate.
+
 ## index.js
 
 Este código es una aplicación de servidor web construida con Node.js y Express, que utiliza Socket.IO para habilitar la comunicación en tiempo real entre los clientes y el servidor. Aquí hay un resumen de sus principales características:

@@ -74,13 +74,16 @@ El servidor emite eventos para actualizar a los clientes sobre el estado de las 
 ![image](https://github.com/user-attachments/assets/c49c1b80-9cbf-4f1a-a7f7-c6a7c73691c9)
 
 ## INSTALACIÓN Y EJECUCIÓN
+Basta con ejecutar el comando:
+
 ```bash
 nodemon index
 ```
+## VERSIÓN 
+Node V22.11.0
 
 ## CREDITS
 - **Laura Maturana CI 27241503**
-- 2024
 
 
 

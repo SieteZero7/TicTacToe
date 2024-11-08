@@ -10,7 +10,7 @@ Tic Tac Toe, también conocido como "Tres en Línea", es un juego de mesa simple
 
 **Empate:** Si todas las celdas del tablero están llenas y ningún jugador ha alineado tres símbolos, el juego termina en empate.
 
-## index.js
+## INDEX.JS
 
 Este código es una aplicación de servidor web construida con **Node.js** y **Express**, que utiliza **Socket.IO** para habilitar la comunicación en tiempo real entre los clientes y el servidor.
 
@@ -40,7 +40,7 @@ Incluye un sistema de chat donde los jugadores pueden enviar mensajes que son tr
 
 El servidor emite eventos para actualizar a los clientes sobre el estado de las salas, el inicio del juego y los movimientos de los jugadores.
 
-## index.html
+## INDEX.HTML
 
 **Estructura HTML:** El código HTML define la estructura de la interfaz del juego, que incluye un menú, un área para mostrar las reglas del juego, un área para ingresar el nombre del jugador, botones para crear o unirse a salas, y la cuadrícula del juego.
 
@@ -53,3 +53,27 @@ El servidor emite eventos para actualizar a los clientes sobre el estado de las 
 **Lógica del Juego:** El código incluye la lógica para manejar los movimientos de los jugadores, verificar si hay un ganador o un empate, y actualizar la interfaz en consecuencia.
 
 **Actualización de la Interfaz:** La interfaz se actualiza dinámicamente en función de las acciones de los jugadores, mostrando quién es el oponente, quién tiene el turno, y los movimientos realizados en la cuadrícula.
+
+## INTERFAZ
+![image](https://github.com/user-attachments/assets/9b62d677-789d-4a54-a5fe-783b1b1225bc)
+
+**Función "Buscar Partida"**
+![image](https://github.com/user-attachments/assets/275c049c-2ec7-4a34-ab6c-3e7be96d67f7)
+
+**Función "Salas"**
+![image](https://github.com/user-attachments/assets/a0937c76-0b21-48c2-8a9b-3383689a7a8d)
+
+**Función "Reglas del juego"**
+![image](https://github.com/user-attachments/assets/f4be363f-d25c-4743-bbb8-d952a4c77275)
+
+**Juego Iniciado**
+![image](https://github.com/user-attachments/assets/2ab22e83-d700-4d9c-90d4-3279c9fe2d79)
+
+**Chat**
+![image](https://github.com/user-attachments/assets/c49c1b80-9cbf-4f1a-a7f7-c6a7c73691c9)
+
+
+
+
+
+

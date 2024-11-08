@@ -70,8 +70,13 @@ El servidor emite eventos para actualizar a los clientes sobre el estado de las 
 ![image](https://github.com/user-attachments/assets/2ab22e83-d700-4d9c-90d4-3279c9fe2d79)
 
 **Chat**
+
 ![image](https://github.com/user-attachments/assets/c49c1b80-9cbf-4f1a-a7f7-c6a7c73691c9)
 
+## INSTALACIÓN Y EJECUCIÓN
+```bash
+nodemon index
+```
 
 
 
